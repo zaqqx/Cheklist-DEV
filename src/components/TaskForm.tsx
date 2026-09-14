@@ -40,6 +40,7 @@ export default function TaskForm({
     cabLink: task?.cabLink ?? "",
     siteUrl: task?.siteUrl ?? "",
     siteName: task?.siteName ?? "",
+    description: task?.description ?? "",
     urgency: task?.urgency ?? "MOYENNE",
     deadline: toDateInputValue(task?.deadline),
     assignedTo: task?.assignedTo ?? "",
@@ -137,6 +138,17 @@ export default function TaskForm({
             {isDetecting ? "Détection du nom du site…" : `Nom détecté : ${detectedSiteName}`}
           </p>
         )}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Description / notes (optionnel)</label>
+        <textarea
+          value={values.description}
+          onChange={(event) => setValues({ ...values, description: event.target.value })}
+          rows={4}
+          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          placeholder="Détails, contraintes, remarques..."
+        />
       </div>
 
       <div>

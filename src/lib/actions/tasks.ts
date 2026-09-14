@@ -12,7 +12,7 @@ import type { Task, TaskStatus, Urgency } from "@/types/task";
 export type ActionResult = { success: true } | { success: false; error: string };
 
 const TASK_COLUMNS =
-  "id,cabCode,cabLink,siteUrl,siteName,urgency,deadline,status,assignedTo,createdAt,updatedAt";
+  "id,cabCode,cabLink,siteUrl,siteName,description,urgency,deadline,status,assignedTo,createdAt,updatedAt";
 
 async function requireUser() {
   const session = await getServerSession(authOptions);
@@ -85,6 +85,7 @@ export async function createTask(input: unknown): Promise<ActionResult> {
       cabLink: data.cabLink || null,
       siteUrl: data.siteUrl || null,
       siteName: data.siteName || null,
+      description: data.description || null,
       urgency: data.urgency as Urgency,
       deadline: data.deadline ? new Date(data.deadline).toISOString() : null,
       assignedTo: data.assignedTo || null,
@@ -120,6 +121,7 @@ export async function updateTask(id: string, input: unknown): Promise<ActionResu
         cabLink: data.cabLink || null,
         siteUrl: data.siteUrl || null,
         siteName,
+        description: data.description || null,
         urgency: data.urgency as Urgency,
         deadline: data.deadline ? new Date(data.deadline).toISOString() : null,
         assignedTo: data.assignedTo || null,

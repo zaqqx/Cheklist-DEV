@@ -14,6 +14,7 @@ export const taskSchema = z.object({
     .or(z.literal("")),
   siteUrl: z.union([z.string().trim().url("Lien du site invalide").max(2048), z.literal("")]),
   siteName: z.string().trim().max(200).optional().or(z.literal("")),
+  description: z.string().trim().max(2000).optional().or(z.literal("")),
   urgency: z.enum(URGENCY_VALUES),
   deadline: z
     .string()

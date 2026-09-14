@@ -10,6 +10,7 @@ create table "Task" (
   "cabLink" text,
   "siteUrl" text,
   "siteName" text,
+  description text,
   urgency "Urgency" not null default 'MOYENNE',
   deadline timestamptz,
   status "TaskStatus" not null default 'A_FAIRE',

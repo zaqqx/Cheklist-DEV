@@ -93,6 +93,10 @@ export default function TaskRow({ task }: { task: TaskWithRelations }) {
           </a>
         )}
 
+        {task.description && (
+          <span className="text-xs text-gray-600">{task.description}</span>
+        )}
+
         <UrgencyBadge urgency={task.urgency} />
 
         <span className="text-xs text-gray-500">{STATUS_LABELS[task.status]}</span>
