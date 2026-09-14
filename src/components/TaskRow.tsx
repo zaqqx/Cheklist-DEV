@@ -82,14 +82,16 @@ export default function TaskRow({ task }: { task: TaskWithRelations }) {
           )
         )}
 
-        <a
-          href={task.siteUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`text-sm text-blue-600 hover:underline ${isDone ? "line-through opacity-60" : ""}`}
-        >
-          {task.siteName || task.siteUrl}
-        </a>
+        {task.siteUrl && (
+          <a
+            href={task.siteUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`text-sm text-blue-600 hover:underline ${isDone ? "line-through opacity-60" : ""}`}
+          >
+            {task.siteName || task.siteUrl}
+          </a>
+        )}
 
         <UrgencyBadge urgency={task.urgency} />
 

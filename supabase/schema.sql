@@ -8,7 +8,7 @@ create table "Task" (
   id text primary key,
   "cabCode" text,
   "cabLink" text,
-  "siteUrl" text not null,
+  "siteUrl" text,
   "siteName" text,
   urgency "Urgency" not null default 'MOYENNE',
   deadline timestamptz,

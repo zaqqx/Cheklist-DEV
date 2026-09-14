@@ -5,7 +5,7 @@ export type Task = {
   id: string;
   cabCode: string | null;
   cabLink: string | null;
-  siteUrl: string;
+  siteUrl: string | null;
   siteName: string | null;
   urgency: Urgency;
   deadline: string | null;

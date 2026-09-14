@@ -83,7 +83,7 @@ export async function createTask(input: unknown): Promise<ActionResult> {
       id: randomUUID(),
       cabCode: data.cabCode || null,
       cabLink: data.cabLink || null,
-      siteUrl: data.siteUrl,
+      siteUrl: data.siteUrl || null,
       siteName: data.siteName || null,
       urgency: data.urgency as Urgency,
       deadline: data.deadline ? new Date(data.deadline).toISOString() : null,
@@ -118,7 +118,7 @@ export async function updateTask(id: string, input: unknown): Promise<ActionResu
       .update({
         cabCode: data.cabCode || null,
         cabLink: data.cabLink || null,
-        siteUrl: data.siteUrl,
+        siteUrl: data.siteUrl || null,
         siteName,
         urgency: data.urgency as Urgency,
         deadline: data.deadline ? new Date(data.deadline).toISOString() : null,

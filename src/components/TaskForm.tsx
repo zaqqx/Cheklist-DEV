@@ -123,10 +123,9 @@ export default function TaskForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Lien du site</label>
+        <label className="block text-sm font-medium text-gray-700">Lien du site (optionnel)</label>
         <input
           type="url"
-          required
           value={values.siteUrl}
           onChange={(event) => setValues({ ...values, siteUrl: event.target.value })}
           onBlur={handleSiteUrlBlur}
