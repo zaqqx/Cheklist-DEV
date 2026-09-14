@@ -15,16 +15,21 @@ const STATUS_LABELS: Record<string, string> = {
 export default function TaskRow({ task }: { task: TaskWithRelations }) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [optimisticStatus, setOptimisticStatus] = useState(task.status);
+  const [isDeleted, setIsDeleted] = useState(false);
 
-  const isDone = task.status === "TERMINE";
+  const isDone = optimisticStatus === "TERMINE";
   const isOverdue = !isDone && task.deadline !== null && new Date(task.deadline) < new Date();
 
   function handleToggle() {
     setError(null);
+    const previousStatus = optimisticStatus;
     const nextStatus = isDone ? "A_FAIRE" : "TERMINE";
+    setOptimisticStatus(nextStatus);
     startTransition(async () => {
       const result = await toggleTaskStatus(task.id, nextStatus);
       if (!result.success) {
+        setOptimisticStatus(previousStatus);
         setError(result.error);
       }
     });
@@ -35,12 +40,18 @@ export default function TaskRow({ task }: { task: TaskWithRelations }) {
       return;
     }
     setError(null);
+    setIsDeleted(true);
     startTransition(async () => {
       const result = await deleteTask(task.id);
       if (!result.success) {
+        setIsDeleted(false);
         setError(result.error);
       }
     });
+  }
+
+  if (isDeleted) {
+    return null;
   }
 
   return (

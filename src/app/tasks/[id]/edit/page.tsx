@@ -1,7 +1,8 @@
 import { getServerSession } from "next-auth";
 import { redirect, notFound } from "next/navigation";
 import { authOptions } from "@/lib/auth";
-import { getAssignees, getTaskById } from "@/lib/actions/tasks";
+import { getTaskById } from "@/lib/actions/tasks";
+import { getDevs } from "@/lib/actions/devs";
 import TaskForm from "@/components/TaskForm";
 
 export default async function EditTaskPage({ params }: { params: Promise<{ id: string }> }) {
@@ -16,7 +17,7 @@ export default async function EditTaskPage({ params }: { params: Promise<{ id: s
     notFound();
   }
 
-  const assignees = await getAssignees();
+  const assignees = await getDevs();
 
   return (
     <div className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6">

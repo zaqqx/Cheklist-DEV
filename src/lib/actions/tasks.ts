@@ -78,14 +78,13 @@ export async function createTask(input: unknown): Promise<ActionResult> {
       return { success: false, error: parsed.error.issues[0]?.message ?? "Données invalides" };
     }
     const data = parsed.data;
-    const siteName = await extractSiteName(data.siteUrl).catch(() => "");
 
     const { error } = await supabase.from("Task").insert({
       id: randomUUID(),
       cabCode: data.cabCode,
       cabLink: data.cabLink || null,
       siteUrl: data.siteUrl,
-      siteName: siteName || null,
+      siteName: data.siteName || null,
       urgency: data.urgency as Urgency,
       deadline: data.deadline ? new Date(data.deadline).toISOString() : null,
       assignedTo: data.assignedTo || null,
@@ -112,11 +111,7 @@ export async function updateTask(id: string, input: unknown): Promise<ActionResu
       return { success: false, error: parsed.error.issues[0]?.message ?? "Données invalides" };
     }
     const data = parsed.data;
-
-    let siteName = existing.siteName;
-    if (data.siteUrl !== existing.siteUrl) {
-      siteName = (await extractSiteName(data.siteUrl).catch(() => "")) || null;
-    }
+    const siteName = data.siteUrl !== existing.siteUrl ? data.siteName || null : existing.siteName;
 
     const { error } = await supabase
       .from("Task")

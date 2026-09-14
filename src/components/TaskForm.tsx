@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { taskSchema } from "@/lib/validations/task";
 import { createTask, fetchSiteNameAction, updateTask } from "@/lib/actions/tasks";
+import { createDev } from "@/lib/actions/devs";
 import type { TaskWithRelations } from "@/types/task";
 
 const URGENCY_OPTIONS = [
@@ -28,6 +29,9 @@ export default function TaskForm({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [devs, setDevs] = useState(assignees);
+  const [newDevName, setNewDevName] = useState("");
+  const [isCreatingDev, setIsCreatingDev] = useState(false);
   const [detectedSiteName, setDetectedSiteName] = useState(task?.siteName ?? "");
   const [isDetecting, setIsDetecting] = useState(false);
 
@@ -35,6 +39,7 @@ export default function TaskForm({
     cabCode: task?.cabCode ?? "",
     cabLink: task?.cabLink ?? "",
     siteUrl: task?.siteUrl ?? "",
+    siteName: task?.siteName ?? "",
     urgency: task?.urgency ?? "MOYENNE",
     deadline: toDateInputValue(task?.deadline),
     assignedTo: task?.assignedTo ?? "",
@@ -51,6 +56,7 @@ export default function TaskForm({
     startTransition(async () => {
       const name = await fetchSiteNameAction(values.siteUrl);
       setDetectedSiteName(name);
+      setValues((current) => ({ ...current, siteName: name }));
       setIsDetecting(false);
     });
   }
@@ -72,7 +78,23 @@ export default function TaskForm({
         return;
       }
       router.push("/");
-      router.refresh();
+    });
+  }
+
+  function handleAddDev() {
+    const trimmed = newDevName.trim();
+    if (!trimmed) return;
+    setIsCreatingDev(true);
+    startTransition(async () => {
+      const result = await createDev(trimmed);
+      setIsCreatingDev(false);
+      if (!result.success) {
+        setError(result.error);
+        return;
+      }
+      setDevs((current) => (current.includes(result.data) ? current : [...current, result.data].sort()));
+      setValues((current) => ({ ...current, assignedTo: result.data }));
+      setNewDevName("");
     });
   }
 
@@ -146,19 +168,35 @@ export default function TaskForm({
 
       <div>
         <label className="block text-sm font-medium text-gray-700">Assigné à (optionnel)</label>
-        <input
-          type="text"
-          list="assignees-list"
+        <select
           value={values.assignedTo}
           onChange={(event) => setValues({ ...values, assignedTo: event.target.value })}
           className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-          placeholder="Nom de la personne"
-        />
-        <datalist id="assignees-list">
-          {assignees.map((assignee) => (
-            <option key={assignee} value={assignee} />
+        >
+          <option value="">— Non assigné —</option>
+          {devs.map((dev) => (
+            <option key={dev} value={dev}>
+              {dev}
+            </option>
           ))}
-        </datalist>
+        </select>
+        <div className="mt-2 flex gap-2">
+          <input
+            type="text"
+            value={newDevName}
+            onChange={(event) => setNewDevName(event.target.value)}
+            className="flex-1 rounded-md border border-gray-300 px-3 py-1.5 text-sm"
+            placeholder="Nouveau dev"
+          />
+          <button
+            type="button"
+            onClick={handleAddDev}
+            disabled={isCreatingDev || !newDevName.trim()}
+            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+          >
+            Ajouter
+          </button>
+        </div>
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
