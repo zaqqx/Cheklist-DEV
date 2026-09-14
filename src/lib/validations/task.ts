@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const URGENCY_VALUES = ["BASSE", "MOYENNE", "HAUTE", "CRITIQUE"] as const;
-export const STATUS_VALUES = ["A_FAIRE", "EN_COURS", "TERMINE"] as const;
+export const STATUS_VALUES = ["A_FAIRE", "TERMINE"] as const;
 
 export const taskSchema = z.object({
   cabCode: z.string().trim().max(100).optional().or(z.literal("")),

@@ -55,7 +55,7 @@ export type TaskFilters = {
 export async function getTasks(filters: TaskFilters = {}): Promise<Task[]> {
   let query = supabase.from("Task").select(TASK_COLUMNS);
 
-  if (filters.status && ["A_FAIRE", "EN_COURS", "TERMINE"].includes(filters.status)) {
+  if (filters.status && ["A_FAIRE", "TERMINE"].includes(filters.status)) {
     query = query.eq("status", filters.status);
   }
   if (filters.assignedTo) {

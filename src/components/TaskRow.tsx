@@ -8,7 +8,6 @@ import type { TaskWithRelations } from "@/types/task";
 
 const STATUS_LABELS: Record<string, string> = {
   A_FAIRE: "À faire",
-  EN_COURS: "En cours",
   TERMINE: "Terminé",
 };
 

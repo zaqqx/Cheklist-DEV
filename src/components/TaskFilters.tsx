@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 const STATUS_OPTIONS = [
   { value: "", label: "Tous les statuts" },
   { value: "A_FAIRE", label: "À faire" },
-  { value: "EN_COURS", label: "En cours" },
   { value: "TERMINE", label: "Terminé" },
 ];
 
