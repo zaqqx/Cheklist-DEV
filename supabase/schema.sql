@@ -6,7 +6,7 @@ create type "TaskStatus" as enum ('A_FAIRE', 'EN_COURS', 'TERMINE');
 
 create table "Task" (
   id text primary key,
-  "cabCode" text not null,
+  "cabCode" text,
   "cabLink" text,
   "siteUrl" text not null,
   "siteName" text,

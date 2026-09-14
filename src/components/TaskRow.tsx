@@ -36,7 +36,8 @@ export default function TaskRow({ task }: { task: TaskWithRelations }) {
   }
 
   function handleDelete() {
-    if (!confirm(`Supprimer la tâche ${task.cabCode} ?`)) {
+    const taskLabel = task.cabCode || task.siteName || task.siteUrl;
+    if (!confirm(`Supprimer la tâche ${taskLabel} ?`)) {
       return;
     }
     setError(null);
@@ -66,17 +67,19 @@ export default function TaskRow({ task }: { task: TaskWithRelations }) {
       />
 
       <div className="flex flex-1 flex-wrap items-center gap-2">
-        {task.cabLink ? (
-          <a
-            href={task.cabLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`font-medium text-blue-700 hover:underline ${isDone ? "line-through opacity-60" : ""}`}
-          >
-            {task.cabCode}
-          </a>
-        ) : (
-          <span className={`font-medium ${isDone ? "line-through opacity-60" : ""}`}>{task.cabCode}</span>
+        {task.cabCode && (
+          task.cabLink ? (
+            <a
+              href={task.cabLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`font-medium text-blue-700 hover:underline ${isDone ? "line-through opacity-60" : ""}`}
+            >
+              {task.cabCode}
+            </a>
+          ) : (
+            <span className={`font-medium ${isDone ? "line-through opacity-60" : ""}`}>{task.cabCode}</span>
+          )
         )}
 
         <a

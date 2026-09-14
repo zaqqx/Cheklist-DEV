@@ -101,10 +101,9 @@ export default function TaskForm({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700">Code CAB</label>
+        <label className="block text-sm font-medium text-gray-700">Code CAB (optionnel)</label>
         <input
           type="text"
-          required
           value={values.cabCode}
           onChange={(event) => setValues({ ...values, cabCode: event.target.value })}
           className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"

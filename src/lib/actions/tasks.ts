@@ -81,7 +81,7 @@ export async function createTask(input: unknown): Promise<ActionResult> {
 
     const { error } = await supabase.from("Task").insert({
       id: randomUUID(),
-      cabCode: data.cabCode,
+      cabCode: data.cabCode || null,
       cabLink: data.cabLink || null,
       siteUrl: data.siteUrl,
       siteName: data.siteName || null,
@@ -116,7 +116,7 @@ export async function updateTask(id: string, input: unknown): Promise<ActionResu
     const { error } = await supabase
       .from("Task")
       .update({
-        cabCode: data.cabCode,
+        cabCode: data.cabCode || null,
         cabLink: data.cabLink || null,
         siteUrl: data.siteUrl,
         siteName,

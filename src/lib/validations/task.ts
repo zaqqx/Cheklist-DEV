@@ -4,7 +4,7 @@ export const URGENCY_VALUES = ["BASSE", "MOYENNE", "HAUTE", "CRITIQUE"] as const
 export const STATUS_VALUES = ["A_FAIRE", "EN_COURS", "TERMINE"] as const;
 
 export const taskSchema = z.object({
-  cabCode: z.string().trim().min(1, "Le code CAB est requis").max(100),
+  cabCode: z.string().trim().max(100).optional().or(z.literal("")),
   cabLink: z
     .string()
     .trim()

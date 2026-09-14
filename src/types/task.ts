@@ -3,7 +3,7 @@ export type TaskStatus = "A_FAIRE" | "EN_COURS" | "TERMINE";
 
 export type Task = {
   id: string;
-  cabCode: string;
+  cabCode: string | null;
   cabLink: string | null;
   siteUrl: string;
   siteName: string | null;
