@@ -18,6 +18,7 @@ async function requireUser() {
 }
 
 export async function getDevs(): Promise<string[]> {
+  await requireUser();
   const { data, error } = await supabase.from("Dev").select("name").order("name", { ascending: true });
   if (error) throw new Error(error.message);
   return (data ?? []).map((row) => row.name as string);

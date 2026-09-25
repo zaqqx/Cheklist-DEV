@@ -24,6 +24,7 @@ async function requireUser() {
 
 export async function fetchSiteNameAction(siteUrl: string): Promise<string> {
   try {
+    await requireUser();
     return await extractSiteName(siteUrl);
   } catch {
     return "";
@@ -31,6 +32,7 @@ export async function fetchSiteNameAction(siteUrl: string): Promise<string> {
 }
 
 export async function getAssignees() {
+  await requireUser();
   const { data, error } = await supabase
     .from("Task")
     .select("assignedTo")
@@ -42,6 +44,7 @@ export async function getAssignees() {
 }
 
 export async function getTaskById(id: string): Promise<Task | null> {
+  await requireUser();
   const { data, error } = await supabase.from("Task").select(TASK_COLUMNS).eq("id", id).maybeSingle();
   if (error) throw new Error(error.message);
   return data as Task | null;
@@ -53,6 +56,7 @@ export type TaskFilters = {
 };
 
 export async function getTasks(filters: TaskFilters = {}): Promise<Task[]> {
+  await requireUser();
   let query = supabase.from("Task").select(TASK_COLUMNS);
 
   if (filters.status && ["A_FAIRE", "TERMINE"].includes(filters.status)) {

@@ -23,11 +23,15 @@ create index "Task_status_idx" on "Task" (status);
 create index "Task_urgency_idx" on "Task" (urgency);
 create index "Task_assignedTo_idx" on "Task" ("assignedTo");
 
+alter table "Task" enable row level security;
+
 create table "Dev" (
   id text primary key,
   name text not null unique,
   "createdAt" timestamptz not null default now()
 );
 
--- RLS reste désactivée : la table n'est jamais appelée depuis le navigateur,
--- seulement depuis les server actions Next.js, elles-mêmes protégées par NextAuth.
+alter table "Dev" enable row level security;
+
+-- Les server actions utilisent SUPABASE_SECRET_KEY côté serveur après vérification NextAuth.
+-- Aucune policy publique n'est nécessaire : la clé secrète bypass les RLS.

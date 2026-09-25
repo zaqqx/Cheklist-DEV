@@ -6,6 +6,7 @@ Application interne de checklist/gestion de tâches (Next.js 14 App Router, Next
 
 1. Copier `.env.example` vers `.env` et renseigner les valeurs :
    - `NEXT_PUBLIC_SUPABASE_URL` et `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` : dans le dashboard Supabase → **Settings > API**
+   - `SUPABASE_SECRET_KEY` : la clé secrète Supabase, uniquement côté serveur (ne jamais la préfixer par `NEXT_PUBLIC_`)
    - `APP_LOGIN` : l'identifiant partagé de connexion (ex: `equipe`)
    - `APP_PASSWORD` : le mot de passe partagé, en clair
    - `NEXTAUTH_SECRET` : `openssl rand -base64 32`
