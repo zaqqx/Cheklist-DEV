@@ -53,6 +53,9 @@ export async function getTaskById(id: string): Promise<Task | null> {
 export type TaskFilters = {
   status?: string;
   assignedTo?: string;
+  urgency?: string;
+  search?: string;
+  due?: string;
 };
 
 export async function getTasks(filters: TaskFilters = {}): Promise<Task[]> {
@@ -64,6 +67,18 @@ export async function getTasks(filters: TaskFilters = {}): Promise<Task[]> {
   }
   if (filters.assignedTo) {
     query = query.eq("assignedTo", filters.assignedTo);
+  }
+  if (filters.urgency && ["BASSE", "MOYENNE", "HAUTE", "CRITIQUE"].includes(filters.urgency)) {
+    query = query.eq("urgency", filters.urgency);
+  }
+  if (filters.search?.trim()) {
+    const search = filters.search.trim().replace(/[%(),]/g, " ");
+    query = query.or(`cabCode.ilike.%${search}%,siteName.ilike.%${search}%,description.ilike.%${search}%`);
+  }
+  if (filters.due === "overdue") {
+    query = query.lt("deadline", new Date().toISOString()).neq("status", "TERMINE");
+  } else if (filters.due === "without") {
+    query = query.is("deadline", null);
   }
 
   const { data, error } = await query
@@ -110,6 +125,9 @@ export async function updateTask(id: string, input: unknown): Promise<ActionResu
     if (!existing) {
       return { success: false, error: "Tâche introuvable" };
     }
+    if (existing.status === "TERMINE") {
+      return { success: false, error: "Une tâche terminée doit être restaurée avant modification" };
+    }
 
     const parsed = taskSchema.safeParse(input);
     if (!parsed.success) {
@@ -146,6 +164,9 @@ export async function deleteTask(id: string): Promise<ActionResult> {
     const existing = await getTaskById(id);
     if (!existing) {
       return { success: false, error: "Tâche introuvable" };
+    }
+    if (existing.status === "TERMINE") {
+      return { success: false, error: "Une tâche terminée doit être restaurée avant suppression" };
     }
 
     const { error } = await supabase.from("Task").delete().eq("id", id);

@@ -11,7 +11,7 @@ const STATUS_LABELS: Record<string, string> = {
   TERMINE: "Terminé",
 };
 
-export default function TaskRow({ task }: { task: TaskWithRelations }) {
+export default function TaskRow({ task, settings }: { task: TaskWithRelations; settings: { compact: boolean; showDescriptions: boolean; confirmDelete: boolean } }) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [optimisticStatus, setOptimisticStatus] = useState(task.status);
@@ -36,7 +36,7 @@ export default function TaskRow({ task }: { task: TaskWithRelations }) {
 
   function handleDelete() {
     const taskLabel = task.cabCode || task.siteName || task.siteUrl;
-    if (!confirm(`Supprimer la tâche ${taskLabel} ?`)) {
+    if (settings.confirmDelete && !confirm(`Supprimer la tâche ${taskLabel} ?`)) {
       return;
     }
     setError(null);
@@ -55,14 +55,14 @@ export default function TaskRow({ task }: { task: TaskWithRelations }) {
   }
 
   return (
-    <li className={`flex flex-col gap-2 rounded-lg border p-4 sm:flex-row sm:items-center sm:gap-4 ${isDone ? "bg-gray-50 border-gray-200" : "bg-white border-gray-200"}`}>
+    <li className={`flex flex-col gap-2 rounded-lg border ${settings.compact ? "p-2" : "p-4"} sm:flex-row sm:items-center sm:gap-4 ${isDone ? "border-gray-200 bg-gray-100 text-gray-400 grayscale" : "border-gray-200 bg-white"}`}>
       <input
         type="checkbox"
         checked={isDone}
         onChange={handleToggle}
-        disabled={isPending}
-        aria-label="Marquer comme terminé"
-        className="h-5 w-5 shrink-0 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+        aria-label={isDone ? "Ticket terminé" : "Marquer comme terminé"}
+        className="h-5 w-5 shrink-0 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
+        disabled={isPending || isDone}
       />
 
       <div className="flex flex-1 flex-wrap items-center gap-2">
@@ -92,13 +92,13 @@ export default function TaskRow({ task }: { task: TaskWithRelations }) {
           </a>
         )}
 
-        {task.description && (
+        {settings.showDescriptions && task.description && (
           <span className="text-xs text-gray-600">{task.description}</span>
         )}
 
         <UrgencyBadge urgency={task.urgency} />
 
-        <span className="text-xs text-gray-500">{STATUS_LABELS[task.status]}</span>
+        <span className={`text-xs font-medium ${isDone ? "text-gray-400" : "text-gray-500"}`}>{STATUS_LABELS[optimisticStatus]}</span>
 
         {task.deadline && (
           <span className={`text-xs font-medium ${isOverdue ? "text-red-600" : "text-gray-500"}`}>
@@ -113,19 +113,31 @@ export default function TaskRow({ task }: { task: TaskWithRelations }) {
       </div>
 
       <div className="flex shrink-0 gap-2">
-        <Link
-          href={`/tasks/${task.id}/edit`}
-          className="rounded-md border border-gray-300 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
-        >
-          Modifier
-        </Link>
-        <button
-          onClick={handleDelete}
-          disabled={isPending}
-          className="rounded-md border border-red-300 px-2.5 py-1 text-xs font-medium text-red-700 hover:bg-red-50"
-        >
-          Supprimer
-        </button>
+        {isDone ? (
+          <button
+            onClick={handleToggle}
+            disabled={isPending}
+            className="rounded-md border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 hover:bg-blue-100 disabled:opacity-60"
+          >
+            Restaurer
+          </button>
+        ) : (
+          <>
+            <Link
+              href={`/tasks/${task.id}/edit`}
+              className="rounded-md border border-gray-300 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Modifier
+            </Link>
+            <button
+              onClick={handleDelete}
+              disabled={isPending}
+              className="rounded-md border border-red-300 px-2.5 py-1 text-xs font-medium text-red-700 hover:bg-red-50"
+            >
+              Supprimer
+            </button>
+          </>
+        )}
       </div>
 
       {error && <p className="w-full text-xs text-red-600">{error}</p>}

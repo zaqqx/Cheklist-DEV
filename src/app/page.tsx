@@ -10,7 +10,7 @@ import SignOutButton from "@/components/SignOutButton";
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; assignedTo?: string }>;
+  searchParams: Promise<{ status?: string; assignedTo?: string; urgency?: string; search?: string; due?: string }>;
 }) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
@@ -19,7 +19,7 @@ export default async function Home({
 
   const params = await searchParams;
   const [tasks, assignees] = await Promise.all([
-    getTasks({ status: params.status, assignedTo: params.assignedTo }),
+    getTasks({ status: params.status, assignedTo: params.assignedTo, urgency: params.urgency, search: params.search, due: params.due }),
     getAssignees(),
   ]);
 
@@ -34,11 +34,14 @@ export default async function Home({
           >
             Nouvelle tâche
           </Link>
+          <Link href="/settings" aria-label="Paramètres" title="Paramètres" className="rounded-md border border-gray-300 p-2 text-gray-600 hover:bg-gray-50">
+            <span aria-hidden="true">⚙</span>
+          </Link>
           <SignOutButton />
         </div>
       </header>
 
-      <TaskFilters assignees={assignees} />
+      <TaskFilters assignees={assignees} resultCount={tasks.length} />
 
       <TaskList tasks={tasks} />
     </div>
